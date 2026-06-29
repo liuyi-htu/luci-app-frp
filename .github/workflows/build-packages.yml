@@ -19,35 +19,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: openwrt-24.10.7-x86-64-ipk
+          - name: openwrt-24.10.7-ipk
             sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/x86/64
             package_ext: ipk
-            arch_suffix: x86-64
 
-          - name: openwrt-24.10.7-armv7-ipk
-            sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv7
-            package_ext: ipk
-            arch_suffix: armv7
-
-          - name: openwrt-24.10.7-armv8-ipk
-            sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv8
-            package_ext: ipk
-            arch_suffix: armv8
-
-          - name: openwrt-25.12.4-x86-64-apk
+          - name: openwrt-25.12.4-apk
             sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/x86/64
             package_ext: apk
-            arch_suffix: x86-64
-
-          - name: openwrt-25.12.4-armv7-apk
-            sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv7
-            package_ext: apk
-            arch_suffix: armv7
-
-          - name: openwrt-25.12.4-armv8-apk
-            sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv8
-            package_ext: apk
-            arch_suffix: armv8
 
     steps:
       - name: Checkout package source
@@ -129,7 +107,7 @@ jobs:
           find "${SDK_DIR}/bin/packages" -type f \( -name "${PACKAGE_NAME}*.${{ matrix.package_ext }}" -o -name "${I18N_MATCH}*.${{ matrix.package_ext }}" \) | sort | while read -r FILE; do
             BASENAME="$(basename "${FILE}")"
 
-            # Normalize apk names before adding the release architecture suffix.
+            # Normalize apk names to the same version separator style used by ipk.
             if [ "${{ matrix.package_ext }}" = "apk" ]; then
               case "${BASENAME}" in
                 *-"${PKG_SUFFIX}".apk)
@@ -139,10 +117,6 @@ jobs:
             fi
 
             BASENAME="${BASENAME/_all./.}"
-
-            EXTENSION="${BASENAME##*.}"
-            BASENAME_WITHOUT_EXTENSION="${BASENAME%.*}"
-            BASENAME="${BASENAME_WITHOUT_EXTENSION}_${{ matrix.arch_suffix }}.${EXTENSION}"
 
             cp -v "${FILE}" "release/${{ matrix.name }}/${BASENAME}"
           done

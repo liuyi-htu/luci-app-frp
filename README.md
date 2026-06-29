@@ -24,7 +24,7 @@ This project combines LuCI management features for both `frpc` and `frps`. It re
 
 ## Build From Source
 
-Prepare an OpenWrt or ImmortalWrt buildroot or SDK that matches your target firmware version and architecture.
+Prepare an OpenWrt or ImmortalWrt buildroot or SDK that produces the package format you need.
 
 1. Enter the OpenWrt buildroot or SDK:
 
@@ -85,21 +85,19 @@ Typical local build outputs include:
 
 Release packages are generated only when the GitHub Actions workflow is started manually. Pushing project changes does not start a build.
 
-Download the package that matches your firmware package manager and architecture:
+Download the package that matches your firmware package manager:
 
 ```text
 https://github.com/liuyi-htu/luci-app-frp/releases
 ```
 
-Use `.apk` for apk-based firmware and `.ipk` for opkg-based firmware.
-
-Release attachment names append a short architecture suffix before the extension, such as `x86-64`, `armv7`, or `armv8`. The examples below use `armv8`; replace it with the suffix that matches your device.
+Use `.apk` for apk-based firmware and `.ipk` for opkg-based firmware. Release packages are architecture-independent LuCI packages, so the release artifacts are distinguished only by package format.
 
 ### Install `.apk`
 
 ```sh
-scp luci-app-frp_1.0-r9_armv8.apk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn_1.0-r9_armv8.apk root@192.168.1.1:/tmp/
+scp luci-app-frp_1.0-r9.apk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9.apk root@192.168.1.1:/tmp/
 ```
 
 SSH into the router:
@@ -111,15 +109,15 @@ ssh root@192.168.1.1
 Install the packages:
 
 ```sh
-apk add --allow-untrusted /tmp/luci-app-frp_1.0-r9_armv8.apk
-apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn_1.0-r9_armv8.apk
+apk add --allow-untrusted /tmp/luci-app-frp_1.0-r9.apk
+apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn_1.0-r9.apk
 ```
 
 ### Install `.ipk`
 
 ```sh
-scp luci-app-frp_1.0-r9_armv8.ipk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn_1.0-r9_armv8.ipk root@192.168.1.1:/tmp/
+scp luci-app-frp_1.0-r9.ipk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9.ipk root@192.168.1.1:/tmp/
 ```
 
 SSH into the router:
@@ -137,11 +135,11 @@ opkg update
 Install the packages:
 
 ```sh
-opkg install /tmp/luci-app-frp_1.0-r9_armv8.ipk
-opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9_armv8.ipk
+opkg install /tmp/luci-app-frp_1.0-r9.ipk
+opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9.ipk
 ```
 
-If dependencies are missing, install the matching `luci-base`, `uci`, `frpc`, and `frps` packages for your firmware version and architecture.
+If dependencies are missing, install `luci-base`, `uci`, `frpc`, and `frps` from the package feeds that match your firmware.
 
 Refresh the LuCI cache and reload services:
 
@@ -159,7 +157,7 @@ Services -> frp Intranet Proxy
 
 ## Notes
 
-- Install packages that match your firmware version, architecture, and package manager.
+- Install packages that match your firmware package manager.
 - Do not install `.apk` packages with `opkg`, and do not install `.ipk` packages with `apk`.
 - This LuCI package depends on `luci-base`, `uci`, `frpc`, and `frps`.
 - This package does not install `/etc/init.d/frpc`, `/etc/init.d/frps`, `/etc/config/frpc`, `/etc/config/frps`, `/usr/bin/frpc`, or `/usr/bin/frps`; those files are provided by the runtime packages.
