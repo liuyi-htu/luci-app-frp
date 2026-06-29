@@ -91,11 +91,13 @@ https://github.com/liuyi-htu/luci-app-frp/releases
 
 apk-based 固件使用 `.apk`，opkg-based 固件使用 `.ipk`。
 
+Release 附件会在扩展名前追加架构后缀，例如 `x86-64`、`armsr-armv7` 或 `armsr-armv8`。下面以 `armsr-armv8` 为例，请按实际固件架构替换。
+
 ### 安装 `.apk`
 
 ```sh
-scp luci-app-frp-1.0-r9.apk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn-1.0-r9.apk root@192.168.1.1:/tmp/
+scp luci-app-frp_1.0-r9_all_armsr-armv8.apk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.apk root@192.168.1.1:/tmp/
 ```
 
 SSH 到路由器：
@@ -107,15 +109,15 @@ ssh root@192.168.1.1
 安装软件包：
 
 ```sh
-apk add --allow-untrusted /tmp/luci-app-frp-1.0-r9.apk
-apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn-1.0-r9.apk
+apk add --allow-untrusted /tmp/luci-app-frp_1.0-r9_all_armsr-armv8.apk
+apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.apk
 ```
 
 ### 安装 `.ipk`
 
 ```sh
-scp luci-app-frp_1.0-r9_all.ipk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn_1.0-r9_all.ipk root@192.168.1.1:/tmp/
+scp luci-app-frp_1.0-r9_all_armsr-armv8.ipk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.ipk root@192.168.1.1:/tmp/
 ```
 
 SSH 到路由器：
@@ -133,8 +135,8 @@ opkg update
 安装软件包：
 
 ```sh
-opkg install /tmp/luci-app-frp_1.0-r9_all.ipk
-opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9_all.ipk
+opkg install /tmp/luci-app-frp_1.0-r9_all_armsr-armv8.ipk
+opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.ipk
 ```
 
 如果提示缺少依赖，请先安装与固件版本和架构匹配的 `luci-base`、`uci`、`frpc` 和 `frps`。

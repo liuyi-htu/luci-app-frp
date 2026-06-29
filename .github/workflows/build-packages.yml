@@ -31,10 +31,32 @@ jobs:
           - name: openwrt-24.10.7-x86-64-ipk
             sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/x86/64
             package_ext: ipk
+            arch_suffix: x86-64
+
+          - name: openwrt-24.10.7-armsr-armv7-ipk
+            sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv7
+            package_ext: ipk
+            arch_suffix: armsr-armv7
+
+          - name: openwrt-24.10.7-armsr-armv8-ipk
+            sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv8
+            package_ext: ipk
+            arch_suffix: armsr-armv8
 
           - name: openwrt-25.12.4-x86-64-apk
             sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/x86/64
             package_ext: apk
+            arch_suffix: x86-64
+
+          - name: openwrt-25.12.4-armsr-armv7-apk
+            sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv7
+            package_ext: apk
+            arch_suffix: armsr-armv7
+
+          - name: openwrt-25.12.4-armsr-armv8-apk
+            sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv8
+            package_ext: apk
+            arch_suffix: armsr-armv8
 
     steps:
       - name: Checkout package source
@@ -124,6 +146,10 @@ jobs:
                   ;;
               esac
             fi
+
+            EXTENSION="${BASENAME##*.}"
+            BASENAME_WITHOUT_EXTENSION="${BASENAME%.*}"
+            BASENAME="${BASENAME_WITHOUT_EXTENSION}_${{ matrix.arch_suffix }}.${EXTENSION}"
 
             cp -v "${FILE}" "release/${{ matrix.name }}/${BASENAME}"
           done
