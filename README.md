@@ -4,7 +4,7 @@
 
 项目地址：`https://github.com/liuyi-htu/luci-app-frp`。
 
-本仓库只保存 LuCI 应用源码，编译好的 `.ipk` 和 `.apk` 软件包会由 GitHub Actions 发布到 Releases。
+本仓库只保存 LuCI 应用源码。
 
 ## 融合与参考来源
 
@@ -12,13 +12,6 @@
 
 - `luci-app-frpc` 开源地址：<https://github.com/kuoruan/luci-app-frpc>
 - `luci-app-frps` 开源地址：<https://github.com/lwz322/luci-app-frps>
-
-对应的 frp 官方运行组件源码：
-
-- `frpc` 客户端开源地址：<https://github.com/fatedier/frp/tree/dev/cmd/frpc>
-- `frps` 服务端开源地址：<https://github.com/fatedier/frp/tree/dev/cmd/frps>
-
-上游 frp 项目地址：<https://github.com/fatedier/frp>
 
 ## 功能
 
@@ -87,15 +80,6 @@
 - `luci-i18n-frp-zh-cn-1.0-r9.apk`
 - `luci-app-frp_1.0-r9_all.ipk`
 - `luci-i18n-frp-zh-cn_1.0-r9_all.ipk`
-
-## GitHub 自动编译
-
-`.github/workflows/build-packages.yml` 会自动编译两种格式：
-
-- `.ipk`：OpenWrt 24.10.7 x86/64 SDK。
-- `.apk`：OpenWrt 25.12.4 x86/64 SDK。
-
-工作流支持手动运行，也会在推送 `main` 或 `master` 分支并修改源码时自动运行。每次运行会上传 workflow artifacts，并按 Makefile 中的 `PKG_VERSION` 和 `PKG_RELEASE` 自动创建或更新 GitHub Release，例如 `v1.0-r9`。
 
 ## 离线安装
 
