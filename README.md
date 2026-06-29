@@ -1,147 +1,149 @@
 # luci-app-frp
 
-用于 OpenWrt/ImmortalWrt 的 frp LuCI 管理界面，将 `frpc` 客户端和 `frps` 服务端整合到同一个页面中。
+A LuCI management interface for frp on OpenWrt and ImmortalWrt. It brings `frpc` client settings and `frps` server settings into a single LuCI page.
 
-项目地址：`https://github.com/liuyi-htu/luci-app-frp`。
+Project URL: `https://github.com/liuyi-htu/luci-app-frp`.
 
-本仓库只保存 LuCI 应用源码。
+This repository contains only the LuCI application source code.
 
-## 融合与参考来源
+## Sources And Credits
 
-本项目将 `frpc` 客户端和 `frps` 服务端的 LuCI 管理功能整合到同一个应用中，对应的 LuCI 开源项目地址如下：
+This project combines LuCI management features for both `frpc` and `frps`. It references the following LuCI projects:
 
-- `luci-app-frpc` 开源地址：<https://github.com/kuoruan/luci-app-frpc>
-- `luci-app-frps` 开源地址：<https://github.com/lwz322/luci-app-frps>
+- `luci-app-frpc`: <https://github.com/kuoruan/luci-app-frpc>
+- `luci-app-frps`: <https://github.com/lwz322/luci-app-frps>
 
-## 功能
+## Features
 
-- 在 LuCI 中提供 `Services -> frp Intranet Proxy` 菜单入口。
-- 同一页面管理 `frpc` 客户端和 `frps` 服务端。
-- 启动项配置写入现有的 UCI 配置：`frpc` 和 `frps`。
-- 客户端代理段在客户端通用设置下管理。
-- 运行脚本、配置生成逻辑和二进制文件由 `frpc`、`frps` 运行包提供。
-- 提供简体中文翻译包 `luci-i18n-frp-zh-cn`。
+- Adds a `Services -> frp Intranet Proxy` menu entry in LuCI.
+- Manages both `frpc` client settings and `frps` server settings on one page.
+- Writes startup settings to the existing UCI configs: `frpc` and `frps`.
+- Keeps client proxy sections under the client common settings.
+- Uses the runtime packages `frpc` and `frps` for init scripts, config generation, and binaries.
+- Provides the Simplified Chinese translation package `luci-i18n-frp-zh-cn`.
 
-## 从源码编译
+## Build From Source
 
-准备一个与目标固件版本和架构匹配的 OpenWrt/ImmortalWrt 源码树或 SDK。
+Prepare an OpenWrt or ImmortalWrt buildroot or SDK that matches your target firmware version and architecture.
 
-1. 进入 OpenWrt buildroot 或 SDK：
+1. Enter the OpenWrt buildroot or SDK:
 
    ```sh
    cd /path/to/openwrt
    ```
 
-2. 克隆本仓库到 package 目录：
+2. Clone this repository into the `package` directory:
 
    ```sh
    git clone https://github.com/liuyi-htu/luci-app-frp.git package/luci-app-frp
    ```
 
-3. 更新并安装 feeds：
+3. Update and install feeds:
 
    ```sh
    ./scripts/feeds update -a
    ./scripts/feeds install -a
    ```
 
-4. 选择软件包：
+4. Select the package:
 
    ```sh
    make menuconfig
    ```
 
-   启用：
+   Enable:
 
    ```text
    LuCI -> Applications -> luci-app-frp
    ```
 
-5. 编译软件包：
+5. Build the package:
 
    ```sh
    make package/luci-app-frp/compile V=s
    ```
 
-6. 查找生成的软件包：
+6. Find the generated packages:
 
    ```sh
    find bin/packages \( -name 'luci-app-frp*.apk' -o -name 'luci-app-frp*.ipk' -o -name 'luci-i18n-frp*.apk' -o -name 'luci-i18n-frp*.ipk' \)
    ```
 
-不同 SDK 会生成不同包格式：
+Different SDKs produce different package formats:
 
-- 较新的 apk-based 固件生成 `.apk`。
-- 较旧的 opkg-based 固件生成 `.ipk`。
+- Newer apk-based firmware builds `.apk` packages.
+- Older opkg-based firmware builds `.ipk` packages.
 
-通常会生成：
+Typical local build outputs include:
 
 - `luci-app-frp-1.0-r9.apk`
 - `luci-i18n-frp-zh-cn-1.0-r9.apk`
 - `luci-app-frp_1.0-r9_all.ipk`
 - `luci-i18n-frp-zh-cn_1.0-r9_all.ipk`
 
-## 离线安装
+## GitHub Release Packages
 
-从最新 Release 下载与固件包管理器匹配的文件：
+Release packages are generated only when the GitHub Actions workflow is started manually. Pushing project changes does not start a build.
+
+Download the package that matches your firmware package manager and architecture:
 
 ```text
 https://github.com/liuyi-htu/luci-app-frp/releases
 ```
 
-apk-based 固件使用 `.apk`，opkg-based 固件使用 `.ipk`。
+Use `.apk` for apk-based firmware and `.ipk` for opkg-based firmware.
 
-Release 附件会在扩展名前追加架构后缀，例如 `x86-64`、`armsr-armv7` 或 `armsr-armv8`。下面以 `armsr-armv8` 为例，请按实际固件架构替换。
+Release attachment names append a short architecture suffix before the extension, such as `x86-64`, `armv7`, or `armv8`. The examples below use `armv8`; replace it with the suffix that matches your device.
 
-### 安装 `.apk`
-
-```sh
-scp luci-app-frp_1.0-r9_all_armsr-armv8.apk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.apk root@192.168.1.1:/tmp/
-```
-
-SSH 到路由器：
+### Install `.apk`
 
 ```sh
-ssh root@192.168.1.1
+scp luci-app-frp_1.0-r9_armv8.apk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9_armv8.apk root@192.168.1.1:/tmp/
 ```
 
-安装软件包：
-
-```sh
-apk add --allow-untrusted /tmp/luci-app-frp_1.0-r9_all_armsr-armv8.apk
-apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.apk
-```
-
-### 安装 `.ipk`
-
-```sh
-scp luci-app-frp_1.0-r9_all_armsr-armv8.ipk root@192.168.1.1:/tmp/
-scp luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.ipk root@192.168.1.1:/tmp/
-```
-
-SSH 到路由器：
+SSH into the router:
 
 ```sh
 ssh root@192.168.1.1
 ```
 
-如果路由器可以联网，先更新软件包索引：
+Install the packages:
+
+```sh
+apk add --allow-untrusted /tmp/luci-app-frp_1.0-r9_armv8.apk
+apk add --allow-untrusted /tmp/luci-i18n-frp-zh-cn_1.0-r9_armv8.apk
+```
+
+### Install `.ipk`
+
+```sh
+scp luci-app-frp_1.0-r9_armv8.ipk root@192.168.1.1:/tmp/
+scp luci-i18n-frp-zh-cn_1.0-r9_armv8.ipk root@192.168.1.1:/tmp/
+```
+
+SSH into the router:
+
+```sh
+ssh root@192.168.1.1
+```
+
+If the router can access the internet, update the package index first:
 
 ```sh
 opkg update
 ```
 
-安装软件包：
+Install the packages:
 
 ```sh
-opkg install /tmp/luci-app-frp_1.0-r9_all_armsr-armv8.ipk
-opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9_all_armsr-armv8.ipk
+opkg install /tmp/luci-app-frp_1.0-r9_armv8.ipk
+opkg install /tmp/luci-i18n-frp-zh-cn_1.0-r9_armv8.ipk
 ```
 
-如果提示缺少依赖，请先安装与固件版本和架构匹配的 `luci-base`、`uci`、`frpc` 和 `frps`。
+If dependencies are missing, install the matching `luci-base`, `uci`, `frpc`, and `frps` packages for your firmware version and architecture.
 
-刷新 LuCI 缓存并重载服务：
+Refresh the LuCI cache and reload services:
 
 ```sh
 rm -f /tmp/luci-indexcache*
@@ -149,15 +151,15 @@ rm -rf /tmp/luci-modulecache/
 /etc/init.d/rpcd reload
 ```
 
-然后打开 LuCI：
+Then open LuCI:
 
 ```text
 Services -> frp Intranet Proxy
 ```
 
-## 注意事项
+## Notes
 
-- 请安装与固件版本、架构和包管理器匹配的软件包。
-- 不要用 `opkg` 安装 `.apk`，也不要用 `apk` 安装 `.ipk`。
-- 本 LuCI 包依赖 `luci-base`、`uci`、`frpc` 和 `frps`。
-- 本包不安装 `/etc/init.d/frpc`、`/etc/init.d/frps`、`/etc/config/frpc`、`/etc/config/frps`、`/usr/bin/frpc` 或 `/usr/bin/frps`，这些文件由运行包提供。
+- Install packages that match your firmware version, architecture, and package manager.
+- Do not install `.apk` packages with `opkg`, and do not install `.ipk` packages with `apk`.
+- This LuCI package depends on `luci-base`, `uci`, `frpc`, and `frps`.
+- This package does not install `/etc/init.d/frpc`, `/etc/init.d/frps`, `/etc/config/frpc`, `/etc/config/frps`, `/usr/bin/frpc`, or `/usr/bin/frps`; those files are provided by the runtime packages.

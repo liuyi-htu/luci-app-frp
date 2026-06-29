@@ -2,15 +2,6 @@ name: Build luci-app-frp Packages
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
-    paths:
-      - ".github/workflows/build-packages.yml"
-      - "Makefile"
-      - "po/**"
-      - "root/**"
 
 permissions:
   contents: write
@@ -33,30 +24,30 @@ jobs:
             package_ext: ipk
             arch_suffix: x86-64
 
-          - name: openwrt-24.10.7-armsr-armv7-ipk
+          - name: openwrt-24.10.7-armv7-ipk
             sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv7
             package_ext: ipk
-            arch_suffix: armsr-armv7
+            arch_suffix: armv7
 
-          - name: openwrt-24.10.7-armsr-armv8-ipk
+          - name: openwrt-24.10.7-armv8-ipk
             sdk_base_url: https://downloads.openwrt.org/releases/24.10.7/targets/armsr/armv8
             package_ext: ipk
-            arch_suffix: armsr-armv8
+            arch_suffix: armv8
 
           - name: openwrt-25.12.4-x86-64-apk
             sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/x86/64
             package_ext: apk
             arch_suffix: x86-64
 
-          - name: openwrt-25.12.4-armsr-armv7-apk
+          - name: openwrt-25.12.4-armv7-apk
             sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv7
             package_ext: apk
-            arch_suffix: armsr-armv7
+            arch_suffix: armv7
 
-          - name: openwrt-25.12.4-armsr-armv8-apk
+          - name: openwrt-25.12.4-armv8-apk
             sdk_base_url: https://downloads.openwrt.org/releases/25.12.4/targets/armsr/armv8
             package_ext: apk
-            arch_suffix: armsr-armv8
+            arch_suffix: armv8
 
     steps:
       - name: Checkout package source
@@ -138,14 +129,16 @@ jobs:
           find "${SDK_DIR}/bin/packages" -type f \( -name "${PACKAGE_NAME}*.${{ matrix.package_ext }}" -o -name "${I18N_MATCH}*.${{ matrix.package_ext }}" \) | sort | while read -r FILE; do
             BASENAME="$(basename "${FILE}")"
 
-            # Normalize apk names to the ipk-style all-arch package name.
+            # Normalize apk names before adding the release architecture suffix.
             if [ "${{ matrix.package_ext }}" = "apk" ]; then
               case "${BASENAME}" in
                 *-"${PKG_SUFFIX}".apk)
-                  BASENAME="${BASENAME%-${PKG_SUFFIX}.apk}_${PKG_SUFFIX}_all.apk"
+                  BASENAME="${BASENAME%-${PKG_SUFFIX}.apk}_${PKG_SUFFIX}.apk"
                   ;;
               esac
             fi
+
+            BASENAME="${BASENAME/_all./.}"
 
             EXTENSION="${BASENAME##*.}"
             BASENAME_WITHOUT_EXTENSION="${BASENAME%.*}"
@@ -220,14 +213,14 @@ jobs:
           PROJECT_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
 
           NOTES=$(cat <<EOF
-          自动编译 luci-app-frp 软件包
+          Build luci-app-frp packages
 
-          软件包版本：${TAG}
-          编译时间：${DISPLAY_TIME}
-          项目地址：${PROJECT_URL}
-          分支：${GITHUB_REF_NAME}
-          Commit：${GITHUB_SHA}
-          Workflow Run：${GITHUB_RUN_NUMBER}
+          Package version: ${TAG}
+          Build time: ${DISPLAY_TIME}
+          Project URL: ${PROJECT_URL}
+          Branch: ${GITHUB_REF_NAME}
+          Commit: ${GITHUB_SHA}
+          Workflow run: ${GITHUB_RUN_NUMBER}
 
           EOF
           )
